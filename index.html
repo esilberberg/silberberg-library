@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Silberberg Library</title>
+</head>
+<body>
+    <h1>Silberberg Library</h1>
+
+    <div class="searchBar">
+        <select name="format" id="format-selector">
+            <option value="0">All</option>
+            <option value="1">Books</option>
+            <option value="2">Recordings</option>
+        </select>
+        <input autocomplete="off" type="text" id="search-bar" placeholder="Search terms">
+        <button id="search-btn">Search</button>
+        <button id="refresh-btn">Refresh</button>
+    </div>
+    <div id="search-summary"></div>
+
+    <div id="display-library"></div>
+</body>
+<script src="app.js"></script>
+</html>
+

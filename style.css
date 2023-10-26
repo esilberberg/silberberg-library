@@ -1,0 +1,39 @@
+body {
+    font-family: 'Times New Roman', Times, serif;
+}
+
+#search-summary {
+    font-style: italic;
+}
+
+#display-library {
+    margin-top: 25px;
+}
+
+.item-wrapper {
+    margin-bottom: 25px;
+}
+
+.item-type-label {
+    font-size: 12px;
+    font-style: italic;
+}
+
+.title {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+button {
+    cursor: pointer;
+}
+
+#display-library button {
+    background:none;
+    border:none;
+    margin:0;
+    padding:0;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 1rem;
+    color: blue;
+}
