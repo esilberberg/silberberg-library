@@ -1,5 +1,5 @@
 const apiEndpoint = 'https://api.zotero.org/groups/5247575/items?sort=title';
-const display = document.getElementById('display-library');
+const display = document.getElementById('library-display');
 const input = document.getElementById('search-bar');
 const refreshBtn = document.getElementById('refresh-btn');
 const searchBtn = document.getElementById('search-btn');
@@ -106,16 +106,23 @@ function displayData(data, queryTerms) {
   searchSummary.innerHTML = searchSummaryMsg;
 
   let dataDisplay = data.map((object) => {
-    let itemTypeLabel = object.data.itemType === 'book' ? 'Book' : (object.data.itemType === 'audioRecording' ? 'Recording' : object.data.itemType);
+    let itemTypeLabel = object.data.itemType === 'book' ? '<i class="fa-solid fa-book"></i>' : (object.data.itemType === 'audioRecording' ? '<i class="fa-solid fa-record-vinyl"></i>' : object.data.itemType);
 
     const tags = object.data.tags.map(tagObject => tagObject.tag).join(', ');
     return `
-    <div class="item-wrapper">
-      <div class="item-type-label">${itemTypeLabel}</div>
-      <div class="title">${object.data.title}</div>
-      <div class="second-line"><button class="author-name">${object.data.creators[0].firstName} ${object.data.creators[0].lastName}</button> | ${object.data.date}</div>
-      <div>Subjects: ${tags.split(', ').map(tag => `<button class="subject-tag">${tag}</button>`).join(', ')}</div>
-      <div>Location: ${object.data.archive}</div>
+    <div class="item-row-accordion">
+      <div class="item-row-left">
+          <div class="item-type-label">${itemTypeLabel}</div>
+          <div class="title">${object.data.title}</div>
+      </div>
+      <div class="author"><button class="author-name">${object.data.creators[0].firstName} ${object.data.creators[0].lastName}</button></div>
+    </div>
+    <div class="item-row-hidden-panel">
+      <div class="item-row-panel-content">
+          <div class="year">${object.data.date}</div>
+          <div class="subjects">Subjects: ${tags.split(', ').map(tag => `<button class="subject-tag">${tag}</button>`).join(', ')}</div>
+          <div class="location">Location: ${object.data.archive}</div>
+      </div>
     </div>
     `;
   }).join('');
@@ -135,7 +142,22 @@ function displayData(data, queryTerms) {
       subjectLinkGenerator(event, authorLink);
     });
   });
-}
+  // Create the accordion elements.
+  const itemAccordion = document.querySelectorAll('.item-row-accordion');
+
+  // Add event listeners to the accordion elements.
+  for (let i = 0; i < itemAccordion.length; i++) {
+    itemAccordion[i].addEventListener("click", function() {
+      this.classList.toggle("active-item-row-accordion");
+      var panel = this.nextElementSibling;
+      if (panel.style.maxHeight) {
+        panel.style.maxHeight = null;
+      } else {
+        panel.style.maxHeight = panel.scrollHeight + "px";
+      }
+    });
+
+}};
 
 function subjectLinkGenerator(event, link) {
   filterData(link.textContent);
