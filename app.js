@@ -1,4 +1,4 @@
-const apiEndpoint = 'https://api.zotero.org/groups/5247575/items?sort=title';
+const apiEndpoint = 'https://api.zotero.org/groups/5247575/items?limit=100&sort=title';
 const display = document.getElementById('library-display');
 const input = document.getElementById('search-bar');
 const refreshBtn = document.getElementById('refresh-btn');
