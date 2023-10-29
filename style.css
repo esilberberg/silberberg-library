@@ -125,11 +125,6 @@ input:focus {
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
-.author{
-    white-space: nowrap; 
-    margin-left: 30px;
-}
   
 .active-item-row-accordion, .item-row-accordion:hover {
     background-color: var(--tertiary);
@@ -161,4 +156,8 @@ button {
     padding:0;
     font-size: 1.2rem;
     color: var(--dark);
+}
+
+#library-display button:hover {
+    color: var(--tertiary);
 }

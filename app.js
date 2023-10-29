@@ -108,19 +108,29 @@ function displayData(data, queryTerms) {
   let dataDisplay = data.map((object) => {
     let itemTypeLabel = object.data.itemType === 'book' ? '<i class="fa-solid fa-book"></i>' : (object.data.itemType === 'audioRecording' ? '<i class="fa-solid fa-record-vinyl"></i>' : object.data.itemType);
 
-    const tags = object.data.tags.map(tagObject => tagObject.tag).join(', ');
+    let publisherOrLabel = object.data.itemType === 'audioRecording' ? object.data.label : object.data.publisher;
+
+    const arrayOfTags = object.data.tags.map(tagObject => tagObject.tag).join(', ');
+    const arrayOfLanguages = object.data.language.split(',');
+
+    const arrayOfAuthors = object.data.creators.map(creator => {
+      return creator.firstName + ' ' + creator.lastName;
+    });
+
     return `
     <div class="item-row-accordion">
       <div class="item-row-left">
           <div class="item-type-label">${itemTypeLabel}</div>
           <div class="title">${object.data.title}</div>
       </div>
-      <div class="author"><button class="author-name">${object.data.creators[0].firstName} ${object.data.creators[0].lastName}</button></div>
     </div>
     <div class="item-row-hidden-panel">
       <div class="item-row-panel-content">
+          <div class="author">${arrayOfAuthors.map(author => `<button class="author-name">${author}</button>`).join('<br>')}</div>
           <div class="year">${object.data.date}</div>
-          <div class="subjects">Subjects: ${tags.split(', ').map(tag => `<button class="subject-tag">${tag}</button>`).join(', ')}</div>
+          <div class="publisher">Publisher: ${publisherOrLabel}</div>
+          <div class="language">Language: ${arrayOfLanguages.map(lang => `<button class="language-tag">${lang}</button>`).join(', ')}</div>
+          <div class="subjects">Subjects: ${arrayOfTags.split(', ').map(tag => `<button class="subject-tag">${tag}</button>`).join(', ')}</div>
           <div class="location">Location: ${object.data.archive}</div>
       </div>
     </div>
@@ -133,6 +143,12 @@ function displayData(data, queryTerms) {
   document.querySelectorAll('.subject-tag').forEach(tagLink => {
     tagLink.addEventListener('click', () => {
       subjectLinkGenerator(event, tagLink);
+    });
+  });
+
+  document.querySelectorAll('.language-tag').forEach(langLink => {
+    langLink.addEventListener('click', () => {
+      subjectLinkGenerator(event, langLink);
     });
   });
 
