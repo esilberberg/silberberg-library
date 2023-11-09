@@ -1,4 +1,4 @@
-const apiEndpoint = 'https://api.zotero.org/groups/5247575/items?limit=100&sort=title';
+const apiEndpoint = 'https://script.google.com/macros/s/AKfycbxIZm7Nd_UYOjeJy_v9IImjJY7maBs0U36OZYZyOvLWdw6srfVCLDRkw_kBsyHqAVrozQ/exec';
 const display = document.getElementById('library-display');
 const input = document.getElementById('search-bar');
 const refreshBtn = document.getElementById('refresh-btn');
@@ -16,13 +16,13 @@ refreshBtn.addEventListener('click', () => {
   runSearch();
 });
 
-let zoteroData = [];
+let apiData = [];
 
 async function getData(url) {
   try {
     const response = await fetch(url);
     const data = await response.json();
-    zoteroData = data;
+    apiData = data;
     filterData(input.value);
   } catch (error) {
     window.alert(error.message);
@@ -33,11 +33,11 @@ getData(apiEndpoint);
 
 function filterData(query, format) {
   if (format === 1) {
-    formatFilterData = zoteroData.filter((item) => item.data.itemType === 'book');
+    formatFilterData = apiData.filter((item) => item.Item_Type === 'book');
   } else if (format === 2) {
-    formatFilterData = zoteroData.filter((item) => item.data.itemType === 'audioRecording');
+    formatFilterData = apiData.filter((item) => item.Item_Type === 'audioRecording');
   } else {
-    formatFilterData = zoteroData;
+    formatFilterData = apiData;
   }
 
   if (query) {
@@ -46,24 +46,12 @@ function filterData(query, format) {
     const filteredData = formatFilterData.filter(allData => {
       return searchTerms.every(term => {
         return (
-          Object.values(allData.data).some(value => {
+          Object.values(allData).some(value => {
             if (value && typeof value === 'string') {
               return removeDiacritics(value.toLowerCase()).includes(term);
             }
             return false;
-          }) |
-          (allData.data.creators &&
-            allData.data.creators.length > 0 &&
-            allData.data.creators[0].firstName &&
-            removeDiacritics(allData.data.creators[0].firstName.toLowerCase()).includes(term)) ||
-          (allData.data.creators &&
-            allData.data.creators.length > 0 &&
-            allData.data.creators[0].lastName &&
-            removeDiacritics(allData.data.creators[0].lastName.toLowerCase()).includes(term)) ||
-          (allData.data.tags &&
-            allData.data.tags.some(tagObject =>
-              removeDiacritics(tagObject.tag.toLowerCase()).includes(term)
-            ))
+          })
         );
       });
     });
@@ -87,6 +75,9 @@ input.addEventListener('keypress', (event) => {
 });
 
 function displayData(data, queryTerms) {
+  
+  data.sort((a, b) => a.Title.localeCompare(b.Title));
+
   if (queryTerms === 1) {
     queryTerms = 'all books';
   } else if (queryTerms === 2) {
@@ -97,7 +88,7 @@ function displayData(data, queryTerms) {
 
   if (data.length === 1) {
     searchSummaryMsg = `A search for ${queryTerms} returned ${data.length} result.`
-  } else if (data.length < zoteroData.length) {
+  } else if (data.length < apiData.length) {
     searchSummaryMsg = `A search for ${queryTerms} returned ${data.length} results.`
   } else {
     searchSummaryMsg = `Showing all ${data.length} results.`
@@ -106,32 +97,27 @@ function displayData(data, queryTerms) {
   searchSummary.innerHTML = searchSummaryMsg;
 
   let dataDisplay = data.map((object) => {
-    let itemTypeLabel = object.data.itemType === 'book' ? '<i class="fa-solid fa-book"></i>' : (object.data.itemType === 'audioRecording' ? '<i class="fa-solid fa-record-vinyl"></i>' : object.data.itemType);
+    let itemTypeLabel = object.Item_Type === 'book' ? '<i class="fa-solid fa-book"></i>' : (object.Item_Type === 'audioRecording' ? '<i class="fa-solid fa-record-vinyl"></i>' : object.Item_Type);
 
-    let publisherOrLabel = object.data.itemType === 'audioRecording' ? object.data.label : object.data.publisher;
-
-    const arrayOfTags = object.data.tags.map(tagObject => tagObject.tag).join(', ');
-    const arrayOfLanguages = object.data.language.split(',');
-
-    const arrayOfAuthors = object.data.creators.map(creator => {
-      return creator.firstName + ' ' + creator.lastName;
-    });
+    const arrayOfSubjects = object.Subject.split(';');
+    const arrayOfLanguages = object.Language.split(';');
+    const arrayOfAuthors = object.Author.split(';');
 
     return `
     <div class="item-row-accordion">
       <div class="item-row-left">
           <div class="item-type-label">${itemTypeLabel}</div>
-          <div class="title">${object.data.title}</div>
+          <div class="title">${object.Title}</div>
       </div>
     </div>
     <div class="item-row-hidden-panel">
       <div class="item-row-panel-content">
           <div class="author">${arrayOfAuthors.map(author => `<button class="author-name">${author}</button>`).join('<br>')}</div>
-          <div class="year">${object.data.date}</div>
-          <div class="publisher">Publisher: ${publisherOrLabel}</div>
+          <div class="year">${object.Year}</div>
+          <div class="publisher">Publisher: ${object.Publisher}</div>
           <div class="language">Language: ${arrayOfLanguages.map(lang => `<button class="language-tag">${lang}</button>`).join(', ')}</div>
-          <div class="subjects">Subjects: ${arrayOfTags.split(', ').map(tag => `<button class="subject-tag">${tag}</button>`).join(', ')}</div>
-          <div class="location">Location: ${object.data.archive}</div>
+          <div class="subjects">Subjects: ${arrayOfSubjects.map(subject => `<button class="subject-tag">${subject}</button>`).join(', ')}</div>
+          <div class="location">Location: ${object.Location}</div>
       </div>
     </div>
     `;
@@ -140,15 +126,16 @@ function displayData(data, queryTerms) {
   display.innerHTML = dataDisplay;
 
   // Add event listeners to all subject tags.
-  document.querySelectorAll('.subject-tag').forEach(tagLink => {
-    tagLink.addEventListener('click', () => {
-      subjectLinkGenerator(event, tagLink);
+  document.querySelectorAll('.subject-tag').forEach(subjectLink => {
+    subjectLink.addEventListener('click', () => {
+      subjectLinkGenerator(event, subjectLink);
     });
   });
 
   document.querySelectorAll('.language-tag').forEach(langLink => {
     langLink.addEventListener('click', () => {
       subjectLinkGenerator(event, langLink);
+      console.log(langLink);
     });
   });
 
