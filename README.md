@@ -1,2 +1,2 @@
-# silberberg-library
-Displays library info using the Zotero API
+# Silberberg Library
+Uses the Sheets API as the database for a library catalog.
