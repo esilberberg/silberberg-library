@@ -12,6 +12,11 @@
 <body>
     <div class="content-wrapper">
         <header>
+            <div class="top-nav">
+                <a href="https://ericsilberberg.com/" target="_blank" rel="noopener noreferrer"><i title="Home" class="fa-solid fa-house"></i></a>
+                <button title="Information" id="open-modal"><i class="fa-solid fa-circle-question"></i></button> 
+            </div>
+
                 <h1>Silberberg Library</h1>
             <div class="search-bar-wrapper">
                 <select name="format" id="format-selector" title="Select Format">
@@ -28,6 +33,16 @@
             <div id="search-summary"></div>
         </header>
 
+        <dialog id="modal">
+            <button id="close-modal"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-content-wrapper">
+            <p class="modal-title">What is the Silberberg Library?</p>
+            <p>The Silberberg Library is the family's union catalog of books and audio recordings. Inquire if there is an item you would like to borrow.</p>
+            <p>The site uses Google Sheets as its database and takes advantage of the Sheets API to deliver all library data. Filtering is performed in the browser. The underlying application is written in vanilla JavaScript, making it lightweight, free, open source, and easily maintainable. This platform serves as a practical solution for those who have spreadsheet-based projects and are seeking for a way to dynamically share their work with the world.</p>
+            <p>Further details about the project can be found in the <a href="https://github.com/esilberberg/silberberg-library" target="_blank" rel="noopener noreferrer">GitHub repo.</a></p>
+            </div>
+        </dialog>
+
         <section id="library-display"></section>
 
         <section id="loader">
@@ -37,4 +52,5 @@
     </div>
 </body>
 <script src="app.js"></script>
+<script src="modal.js"></script>
 </html>
