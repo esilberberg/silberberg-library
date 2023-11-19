@@ -98,7 +98,7 @@ function displayData(data, queryTerms) {
   searchSummary.innerHTML = searchSummaryMsg;
 
   let dataDisplay = data.map((object) => {
-    let itemTypeLabel = object.Item_Type === 'book' ? '<i class="fa-solid fa-book"></i>' : (object.Item_Type === 'audioRecording' ? '<i class="fa-solid fa-record-vinyl"></i>' : object.Item_Type);
+    let itemTypeLabel = object.Item_Type === 'book' ? '<i title="Book" class="fa-solid fa-book"></i>' : (object.Item_Type === 'audioRecording' ? '<i title="Recording" class="fa-solid fa-record-vinyl"></i>' : object.Item_Type);
 
     const arrayOfSubjects = object.Subject.split(';');
     const arrayOfLanguages = object.Language.split(';');
@@ -112,14 +112,33 @@ function displayData(data, queryTerms) {
       </div>
     </div>
     <div class="item-row-hidden-panel">
-      <div class="item-row-panel-content">
-          <div class="author">${arrayOfAuthors.map(author => `<button class="author-name">${author}</button>`).join('<br>')}</div>
-          <div class="year">${object.Year}</div>
-          <div class="publisher">Publisher: ${object.Publisher}</div>
-          <div class="language">Language: ${arrayOfLanguages.map(lang => `<button class="language-tag">${lang}</button>`).join(', ')}</div>
-          <div class="subjects">Subjects: ${arrayOfSubjects.map(subject => `<button class="subject-tag">${subject}</button>`).join(', ')}</div>
-          <div class="location">Location: ${object.Location}</div>
-      </div>
+    <div class="item-row-panel-content">
+    <div class="creator">
+        <div class="element-label">Creator</div>
+        <div class="element-data">${arrayOfAuthors.map(author => `<button class="author-name">${author}</button>`).join('<br>')}</div>
+    </div>
+    <div class="year">
+        <div class="element-label">Year Created</div>
+        <div class="element-data">${object.Year}</div>
+    </div>
+    <div class="publisher">
+        <div class="element-label">Publisher</div>
+        <div class="element-data">${object.Publisher}</div>
+        <div class="element-data">${object.ISBN}</div>
+    </div>
+    <div class="language">
+        <div class="element-label">Language</div>
+        <div class="element-data">${arrayOfLanguages.map(lang => `<button class="language-tag">${lang}</button>`).join(', ')}</div>
+    </div>
+    <div class="subjects">
+        <div class="element-label">Subject</div>
+        <div class="element-data">${arrayOfSubjects.map(subject => `<button class="subject-tag">${subject}</button>`).join(', ')}</div>
+    </div>
+    <div class="location">
+        <div class="element-label">Location</div>
+        <div class="element-data">${object.Location}</div>
+    </div>
+</div>
     </div>
     `;
   }).join('');
@@ -136,7 +155,6 @@ function displayData(data, queryTerms) {
   document.querySelectorAll('.language-tag').forEach(langLink => {
     langLink.addEventListener('click', () => {
       subjectLinkGenerator(event, langLink);
-      console.log(langLink);
     });
   });
 
@@ -165,4 +183,6 @@ function displayData(data, queryTerms) {
 
 function subjectLinkGenerator(event, link) {
   filterData(link.textContent);
+  document.body.scrollTop = 0; // For Safari
+  document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
 }
