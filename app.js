@@ -1,10 +1,11 @@
 const apiEndpoint = 'https://script.google.com/macros/s/AKfycbxIZm7Nd_UYOjeJy_v9IImjJY7maBs0U36OZYZyOvLWdw6srfVCLDRkw_kBsyHqAVrozQ/exec';
 const display = document.getElementById('library-display');
-const input = document.getElementById('search-bar');
+const input = document.getElementById('search-input');
+const searchBtn = document.getElementById('search-input-btn');
 const refreshBtn = document.getElementById('refresh-btn');
-const searchBtn = document.getElementById('search-btn');
 const searchSummary = document.getElementById('search-summary');
 const formatSelector = document.getElementById('format-selector');
+const loader = document.getElementById('loader');
 
 function removeDiacritics(str) {
   return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -75,7 +76,7 @@ input.addEventListener('keypress', (event) => {
 });
 
 function displayData(data, queryTerms) {
-  
+  loader.style.display = 'none';
   data.sort((a, b) => a.Title.localeCompare(b.Title));
 
   if (queryTerms === 1) {

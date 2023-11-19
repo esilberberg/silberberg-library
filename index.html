@@ -14,19 +14,25 @@
         <header>
                 <h1>Silberberg Library</h1>
             <div class="search-bar-wrapper">
-                <select name="format" id="format-selector">
+                <select name="format" id="format-selector" title="Select Format">
                     <option value="0">All</option>
                     <option value="1">Books</option>
                     <option value="2">Recordings</option>
                 </select>
-                <input autocomplete="off" type="text" id="search-bar" placeholder="Search library...">
-                <button id="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
-                <button id="refresh-btn"><i class="fa-solid fa-rotate-right"></i></button>
+                <div id="input-wrapper">
+                    <input autocomplete="off" type="text" id="search-input" placeholder="Search library...">
+                    <button id="search-input-btn" title="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </div>
+                <button id="refresh-btn" title="Refresh"><i class="fa-solid fa-rotate-left"></i></button>
             </div>
             <div id="search-summary"></div>
         </header>
 
         <section id="library-display"></section>
+
+        <section id="loader">
+            <div class="loader"></div>
+        </section>
 
     </div>
 </body>
